@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">PiCams</string>
+    <string name="testConn">Test Connection</string>
+    <string name="add">Add</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="show">Show</string>
+    <string name="hide">Hide</string>
+    <string name="alias">Alias Name</string>
+    <string name="uname">Username</string>
+    <string name="pass">Password</string>
+    <string name="ip">IP Address</string>
+    <string name="port">Port</string>
+    <string name="connect">connect</string>
+    <string name="connSuccess">Connection Successful!</string>
+    <string name="connFailed">Connection Failed!</string>
+</resources>
