@@ -10,7 +10,8 @@
     <string name="uname">Username</string>
     <string name="pass">Password</string>
     <string name="ip">IP Address</string>
-    <string name="port">Port</string>
+    <string name="web_port">Web Port</string>
+    <string name="ssh_port">SSH Port</string>
     <string name="connect">connect</string>
     <string name="connSuccess">Connection Successful!</string>
     <string name="connFailed">Connection Failed!</string>

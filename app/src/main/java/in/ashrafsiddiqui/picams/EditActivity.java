@@ -22,10 +22,10 @@ import com.jcraft.jsch.Session;
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 public class EditActivity extends AppCompatActivity {
 
-    EditText alias_edit, ip_edit, port_edit, uname_edit, pass_edit;
+    EditText alias_edit, ip_edit, webport_edit, sshport_edit, uname_edit, pass_edit;
     Button updateBtn, deleteBtn, testBtn, connectBtn;
     Switch sw;
-    String id, alias, ip, port, uname, pass;
+    String id, alias, ip, web_port, ssh_port, uname, pass;
     TextView testStatus_edit;
     MyDatabaseHelper myDB = new MyDatabaseHelper(EditActivity.this);
 
@@ -37,7 +37,8 @@ public class EditActivity extends AppCompatActivity {
 
         alias_edit = findViewById(R.id.alias_edit);
         ip_edit = findViewById(R.id.ip_edit);
-        port_edit = findViewById(R.id.port_edit);
+        webport_edit = findViewById(R.id.web_port_edit);
+        sshport_edit = findViewById(R.id.ssh_port_edit);
         uname_edit = findViewById(R.id.uname_edit);
         pass_edit = findViewById(R.id.pass_edit);
         sw = findViewById(R.id.showHide_edit);
@@ -67,12 +68,13 @@ public class EditActivity extends AppCompatActivity {
         updateBtn.setOnClickListener(view -> {
             alias = alias_edit.getText().toString().trim();
             ip = ip_edit.getText().toString().trim();
-            port = port_edit.getText().toString().trim();
+            web_port = webport_edit.getText().toString().trim();
+            ssh_port = sshport_edit.getText().toString().trim();
             uname = uname_edit.getText().toString().trim();
             pass = pass_edit.getText().toString().trim();
-            boolean result = readInputs(alias, ip, port, uname, pass);
+            boolean result = readInputs(alias, ip, web_port, ssh_port, uname, pass);
             if(result){
-                myDB.updateData(id, alias, ip, port, uname, pass);
+                myDB.updateData(id, alias, ip, web_port, ssh_port, uname, pass);
             }
         });
 
@@ -81,10 +83,11 @@ public class EditActivity extends AppCompatActivity {
         testBtn.setOnClickListener(view -> {
             alias = alias_edit.getText().toString().trim();
             ip = ip_edit.getText().toString().trim();
-            port = port_edit.getText().toString().trim();
+            web_port = webport_edit.getText().toString().trim();
+            ssh_port = sshport_edit.getText().toString().trim();
             uname = uname_edit.getText().toString().trim();
             pass = pass_edit.getText().toString().trim();
-            boolean result = readInputs(alias, ip, port, uname, pass);
+            boolean result = readInputs(alias, ip, web_port, ssh_port, uname, pass);
             System.out.println(result);
             testStatus_edit.setVisibility(View.INVISIBLE);
             if(result){
@@ -92,7 +95,7 @@ public class EditActivity extends AppCompatActivity {
                     @Override
                     protected Void doInBackground(Integer... params) {
                         try {
-                            Session connResult = SSHCommand.testConn(uname, pass, ip);
+                            Session connResult = SSHCommand.testConn(uname, pass, ip, Integer.parseInt(ssh_port));
                             runOnUiThread(() -> {
                                 if(connResult != null){
                                     testStatus_edit.setText(R.string.connSuccess);
@@ -117,20 +120,22 @@ public class EditActivity extends AppCompatActivity {
             Bundle b = new Bundle();
             alias = alias_edit.getText().toString().trim();
             ip = ip_edit.getText().toString().trim();
-            port = port_edit.getText().toString().trim();
+            web_port = webport_edit.getText().toString().trim();
+            ssh_port = sshport_edit.getText().toString().trim();
             uname = uname_edit.getText().toString().trim();
             pass = pass_edit.getText().toString().trim();
             b.putString("alias", alias);
             b.putString("uname", uname);
             b.putString("pass", pass);
             b.putString("ip", ip);
-            b.putString("port", port);
+            b.putString("web_port", web_port);
+            b.putString("ssh_port", ssh_port);
             camIntent.putExtras(b);
             new AsyncTask<Integer, Void, Void>(){
                 @Override
                 protected Void doInBackground(Integer... params) {
                     try {
-                        boolean result = SSHCommand.accessCam(uname, pass, ip, 1);
+                        boolean result = SSHCommand.accessCam(uname, pass, ip, Integer.parseInt(ssh_port), 1);
                         if(result){
                             startActivity(camIntent);
                         }else{
@@ -147,19 +152,21 @@ public class EditActivity extends AppCompatActivity {
 
     void getAndSetIntentData(){
         if(getIntent().hasExtra("id") && getIntent().hasExtra("alias") &&
-                getIntent().hasExtra("ip") && getIntent().hasExtra("port") &&
-                getIntent().hasExtra("uname") && getIntent().hasExtra("pass")){
-
+                getIntent().hasExtra("ip") && getIntent().hasExtra("web_port") &&
+                getIntent().hasExtra("ssh_port") && getIntent().hasExtra("uname") &&
+                getIntent().hasExtra("pass")){
             id = getIntent().getStringExtra("id");
             alias = getIntent().getStringExtra("alias");
             ip = getIntent().getStringExtra("ip");
-            port = getIntent().getStringExtra("port");
+            web_port = getIntent().getStringExtra("web_port");
+            ssh_port = getIntent().getStringExtra("ssh_port");
             uname = getIntent().getStringExtra("uname");
             pass = getIntent().getStringExtra("pass");
 
             alias_edit.setText(alias);
             ip_edit.setText(ip);
-            port_edit.setText(port);
+            webport_edit.setText(web_port);
+            sshport_edit.setText(ssh_port);
             uname_edit.setText(uname);
             pass_edit.setText(pass);
 
@@ -168,16 +175,19 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
-    boolean readInputs(String alias, String ip, String port, String uname, String pass){
+    boolean readInputs(String alias, String ip, String web_port, String ssh_port, String uname, String pass){
 
-        if(alias.isEmpty() || ip.isEmpty()  || port.isEmpty()  || uname.isEmpty()  || pass.isEmpty()){
+        if(alias.isEmpty() || ip.isEmpty()  || web_port.isEmpty()  || ssh_port.isEmpty()  || uname.isEmpty()  || pass.isEmpty()){
             Toast.makeText(EditActivity.this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
         }else if(!Patterns.IP_ADDRESS.matcher(ip).matches()){
             Toast.makeText(EditActivity.this, "Invalid IP Address.", Toast.LENGTH_SHORT).show();
             return false;
-        }else if(0 > Integer.parseInt(port) || Integer.parseInt(port) > 65535){
-            Toast.makeText(EditActivity.this, "Invalid Port Number.", Toast.LENGTH_SHORT).show();
+        }else if(0 > Integer.parseInt(web_port) || Integer.parseInt(web_port) > 65535){
+            Toast.makeText(EditActivity.this, "Invalid Web Port Number.", Toast.LENGTH_SHORT).show();
+            return false;
+        }else if(0 > Integer.parseInt(ssh_port) || Integer.parseInt(ssh_port) > 65535){
+            Toast.makeText(EditActivity.this, "Invalid SSH Port Number.", Toast.LENGTH_SHORT).show();
             return false;
         }else return true;
     }

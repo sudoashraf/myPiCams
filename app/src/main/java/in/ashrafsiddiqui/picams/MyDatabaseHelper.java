@@ -18,7 +18,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_ALIAS = "alias";
     private static final String COLUMN_IP = "ip";
-    private static final String COLUMN_PORT = "port";
+    private static final String COLUMN_WEBPORT = "web_port";
+    private static final String COLUMN_SSHPORT = "ssh_port";
     private static final String COLUMN_UNAME = "uname";
     private static final String COLUMN_PASS = "pass";
 
@@ -34,7 +35,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_ALIAS + " TEXT, " +
                 COLUMN_IP + " TEXT, " +
-                COLUMN_PORT + " TEXT, " +
+                COLUMN_WEBPORT + " TEXT, " +
+                COLUMN_SSHPORT + " TEXT, " +
                 COLUMN_UNAME + " TEXT, " +
                 COLUMN_PASS + " TEXT);";
         db.execSQL(query);
@@ -48,13 +50,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    void addPiCam(String alias, String ip, String port, String uname, String pass){
+    void addPiCam(String alias, String ip, String web_port, String ssh_port, String uname, String pass){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMN_ALIAS, alias);
         cv.put(COLUMN_IP, ip);
-        cv.put(COLUMN_PORT, port);
+        cv.put(COLUMN_WEBPORT, web_port);
+        cv.put(COLUMN_SSHPORT, ssh_port);
         cv.put(COLUMN_UNAME, uname);
         cv.put(COLUMN_PASS, pass);
 
@@ -78,12 +81,13 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    void updateData(String row_id, String alias, String ip, String port, String uname, String pass){
+    void updateData(String row_id, String alias, String ip, String web_port, String ssh_port, String uname, String pass){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_ALIAS, alias);
         cv.put(COLUMN_IP, ip);
-        cv.put(COLUMN_PORT, port);
+        cv.put(COLUMN_WEBPORT, web_port);
+        cv.put(COLUMN_SSHPORT, ssh_port);
         cv.put(COLUMN_UNAME, uname);
         cv.put(COLUMN_PASS, pass);
 

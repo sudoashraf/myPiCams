@@ -9,9 +9,9 @@
 
     <EditText
         android:id="@+id/alias_edit"
-        android:layout_width="320dp"
+        android:layout_width="330dp"
         android:layout_height="50dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="@string/alias"
@@ -26,9 +26,9 @@
 
         <EditText
             android:id="@+id/ip_edit"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="50dp"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="24dp"
             android:ems="10"
             android:hint="@string/ip"
@@ -38,15 +38,27 @@
             app:layout_constraintTop_toBottomOf="@+id/alias_edit" />
 
         <EditText
-            android:id="@+id/port_edit"
+            android:id="@+id/web_port_edit"
             android:layout_width="85dp"
             android:layout_height="50dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="6dp"
             android:layout_marginTop="24dp"
             android:ems="10"
-            android:hint="@string/port"
+            android:hint="@string/web_port"
             android:inputType="number"
             app:layout_constraintStart_toEndOf="@+id/ip_edit"
+            app:layout_constraintTop_toBottomOf="@+id/alias_edit" />
+
+        <EditText
+            android:id="@+id/ssh_port_edit"
+            android:layout_width="85dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="24dp"
+            android:ems="10"
+            android:hint="@string/ssh_port"
+            android:inputType="number"
+            app:layout_constraintStart_toEndOf="@+id/web_port_edit"
             app:layout_constraintTop_toBottomOf="@+id/alias_edit" />
 
     </LinearLayout>
@@ -55,7 +67,7 @@
         android:id="@+id/uname_edit"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="@string/uname"
@@ -72,7 +84,7 @@
             android:id="@+id/pass_edit"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="24dp"
             android:ems="10"
             android:hint="@string/pass"
@@ -82,13 +94,14 @@
 
         <Switch
             android:id="@+id/showHide_edit"
-            android:layout_width="94dp"
+            android:layout_width="100dp"
             android:layout_height="50dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="24dp"
             android:text="@string/show"
-            app:layout_constraintStart_toEndOf="@+id/pass_edit"
-            app:layout_constraintTop_toBottomOf="@+id/uname_edit"
+            android:textSize="17sp"
+            app:layout_constraintStart_toEndOf="@+id/pass_input"
+            app:layout_constraintTop_toBottomOf="@+id/uname_input"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     </LinearLayout>

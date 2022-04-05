@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     FloatingActionButton createBtn;
     MyDatabaseHelper myDB;
-    ArrayList<String> id,alias,ip,port,uname,pass;
+    ArrayList<String> id,alias,ip,web_port,ssh_port,uname,pass;
     CustomAdapter customAdapter;
 
     @Override
@@ -34,13 +34,14 @@ public class MainActivity extends AppCompatActivity {
         id = new ArrayList<>();
         alias = new ArrayList<>();
         ip = new ArrayList<>();
-        port = new ArrayList<>();
+        web_port = new ArrayList<>();
+        ssh_port = new ArrayList<>();
         uname = new ArrayList<>();
         pass = new ArrayList<>();
 
         storeDataInArrays();
 
-        customAdapter = new CustomAdapter(MainActivity.this,this, id, alias, ip, port, uname, pass);
+        customAdapter = new CustomAdapter(MainActivity.this,this, id, alias, ip, web_port, ssh_port, uname, pass);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
     }
@@ -60,9 +61,10 @@ public class MainActivity extends AppCompatActivity {
                 id.add(cursor.getString(0));
                 alias.add(cursor.getString(1));
                 ip.add(cursor.getString(2));
-                port.add(cursor.getString(3));
-                uname.add(cursor.getString(4));
-                pass.add(cursor.getString(5));
+                web_port.add(cursor.getString(3));
+                ssh_port.add(cursor.getString(4));
+                uname.add(cursor.getString(5));
+                pass.add(cursor.getString(6));
             }
         }
     }

@@ -17,16 +17,17 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     private final Context context;
     Activity activity;
-    private ArrayList id, alias, ip, port, uname, pass;
+    private ArrayList id, alias, ip, web_port, ssh_port, uname, pass;
 
-    CustomAdapter(Activity activity, Context context, ArrayList id, ArrayList alias, ArrayList ip, ArrayList port,
-                  ArrayList uname, ArrayList pass){
+    CustomAdapter(Activity activity, Context context, ArrayList id, ArrayList alias, ArrayList ip, ArrayList web_port,
+                  ArrayList ssh_port, ArrayList uname, ArrayList pass){
         this.activity = activity;
         this.context = context;
         this.id = id;
         this.alias = alias;
         this.ip = ip;
-        this.port = port;
+        this.web_port = web_port;
+        this.ssh_port = ssh_port;
         this.uname = uname;
         this.pass = pass;
     }
@@ -41,14 +42,16 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         holder.alias_txt.setText(String.valueOf(alias.get(position)));
-        holder.ip_txt.setText(String.valueOf(ip.get(position)));
-        holder.port_txt.setText(String.valueOf(port.get(position)));
+        holder.ip_txt.setText("IP: " + String.valueOf(ip.get(position)));
+        holder.webport_txt.setText("Web: " + String.valueOf(web_port.get(position)));
+        holder.sshport_txt.setText("SSH: " + String.valueOf(ssh_port.get(position)));
         holder.mainLayout.setOnClickListener(view -> {
             Intent intent = new Intent(context, EditActivity.class);
             intent.putExtra("id", String.valueOf(id.get(position)));
             intent.putExtra("alias", String.valueOf(alias.get(position)));
             intent.putExtra("ip", String.valueOf(ip.get(position)));
-            intent.putExtra("port", String.valueOf(port.get(position)));
+            intent.putExtra("web_port", String.valueOf(web_port.get(position)));
+            intent.putExtra("ssh_port", String.valueOf(ssh_port.get(position)));
             intent.putExtra("uname", String.valueOf(uname.get(position)));
             intent.putExtra("pass", String.valueOf(pass.get(position)));
             activity.startActivityForResult(intent, 1);
@@ -63,13 +66,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout mainLayout;
-        TextView alias_txt, ip_txt, port_txt;
+        TextView alias_txt, ip_txt, webport_txt, sshport_txt;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             alias_txt = itemView.findViewById(R.id.alias_txt);
             ip_txt = itemView.findViewById(R.id.ip_txt);
-            port_txt = itemView.findViewById(R.id.port_txt);
+            webport_txt = itemView.findViewById(R.id.webport_txt);
+            sshport_txt = itemView.findViewById(R.id.sshport_txt);
             mainLayout = itemView.findViewById(R.id.mainLayout);
         }
     }

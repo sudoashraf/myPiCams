@@ -13,7 +13,7 @@ import android.webkit.WebViewClient;
 
 public class CamActivity extends AppCompatActivity {
 
-    String alias, ip, port, uname, pass;
+    String alias, ip, web_port, ssh_port, uname, pass;
     WebView CamView;
 
     @Override
@@ -25,7 +25,8 @@ public class CamActivity extends AppCompatActivity {
         uname = getIntent().getExtras().getString("uname");
         pass = getIntent().getExtras().getString("pass");
         ip = getIntent().getExtras().getString("ip");
-        port = getIntent().getExtras().getString("port");
+        web_port = getIntent().getExtras().getString("web_port");
+        ssh_port = getIntent().getExtras().getString("ssh_port");
 
         ActionBar ab = getSupportActionBar();
         if(ab!=null){
@@ -42,7 +43,7 @@ public class CamActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        CamView.loadUrl("http://" + ip + ":" + port + "/index.html");
+        CamView.loadUrl("http://" + ip + ":" + web_port + "/index.html");
         if(CamView.getParent() != null){
             ((ViewGroup)CamView.getParent()).removeView(CamView);
         }
@@ -57,7 +58,7 @@ public class CamActivity extends AppCompatActivity {
             @Override
             protected Void doInBackground(Integer... params) {
                 try {
-                    boolean result = SSHCommand.accessCam(uname, pass, ip, 0);
+                    boolean result = SSHCommand.accessCam(uname, pass, ip, Integer.parseInt(ssh_port), 0);
                     if(result){
                         System.out.println("Stopped Cam");
                     }else{

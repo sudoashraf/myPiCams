@@ -8,10 +8,10 @@ import java.util.Properties;
 
 public class SSHCommand {
 
-    public static Session testConn(String uname, String pass, String ip){
+    public static Session testConn(String uname, String pass, String ip, int ssh_port){
         try{
             JSch jsch = new JSch();
-            Session session = jsch.getSession(uname, ip, 22);
+            Session session = jsch.getSession(uname, ip, ssh_port);
             session.setPassword(pass);
             // Avoid asking for key confirmation
             Properties prop = new Properties();
@@ -26,10 +26,10 @@ public class SSHCommand {
         }
     }
 
-    public static boolean accessCam(String uname, String pass, String ip, int mode){
+    public static boolean accessCam(String uname, String pass, String ip, int ssh_port, int mode){
         try{
             JSch jsch = new JSch();
-            Session session = jsch.getSession(uname, ip, 22);
+            Session session = jsch.getSession(uname, ip, ssh_port);
             session.setPassword(pass);
             // Avoid asking for key confirmation
             Properties prop = new Properties();
