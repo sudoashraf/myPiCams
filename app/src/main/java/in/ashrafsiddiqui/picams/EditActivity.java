@@ -1,5 +1,6 @@
 package in.ashrafsiddiqui.picams;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +27,7 @@ public class EditActivity extends AppCompatActivity {
     Button updateBtn, deleteBtn, testBtn, connectBtn;
     Switch sw;
     String id, alias, ip, web_port, ssh_port, uname, pass;
-    TextView testStatus_edit;
+    public TextView testStatus_edit, openingCam;
     MyDatabaseHelper myDB = new MyDatabaseHelper(EditActivity.this);
 
     @SuppressLint("StaticFieldLeak")
@@ -47,6 +48,7 @@ public class EditActivity extends AppCompatActivity {
         testBtn = findViewById(R.id.testBtn_edit);
         testStatus_edit = findViewById(R.id.testStatus_edit);
         connectBtn = findViewById(R.id.connectBtn);
+        openingCam = findViewById(R.id.openingCam);
 
         getAndSetIntentData();
 
@@ -88,7 +90,6 @@ public class EditActivity extends AppCompatActivity {
             uname = uname_edit.getText().toString().trim();
             pass = pass_edit.getText().toString().trim();
             boolean result = readInputs(alias, ip, web_port, ssh_port, uname, pass);
-            System.out.println(result);
             testStatus_edit.setVisibility(View.INVISIBLE);
             if(result){
                 new AsyncTask<Integer, Void, Void>(){
@@ -116,37 +117,63 @@ public class EditActivity extends AppCompatActivity {
         });
 
         connectBtn.setOnClickListener(view -> {
-            Intent camIntent = new Intent(getApplicationContext(), CamActivity.class);
-            Bundle b = new Bundle();
             alias = alias_edit.getText().toString().trim();
             ip = ip_edit.getText().toString().trim();
             web_port = webport_edit.getText().toString().trim();
             ssh_port = sshport_edit.getText().toString().trim();
             uname = uname_edit.getText().toString().trim();
             pass = pass_edit.getText().toString().trim();
-            b.putString("alias", alias);
-            b.putString("uname", uname);
-            b.putString("pass", pass);
-            b.putString("ip", ip);
-            b.putString("web_port", web_port);
-            b.putString("ssh_port", ssh_port);
-            camIntent.putExtras(b);
-            new AsyncTask<Integer, Void, Void>(){
-                @Override
-                protected Void doInBackground(Integer... params) {
-                    try {
-                        boolean result = SSHCommand.accessCam(uname, pass, ip, Integer.parseInt(ssh_port), 1);
-                        if(result){
-                            startActivity(camIntent);
-                        }else{
-                            System.out.println("ERROR Starting Cam");
+            boolean result = readInputs(alias, ip, web_port, ssh_port, uname, pass);
+            testStatus_edit.setVisibility(View.INVISIBLE);
+            if(result){
+                new AsyncTask<Integer, Void, Void>(){
+                    @Override
+                    protected Void doInBackground(Integer... params) {
+                        try {
+                            Session connResult = SSHCommand.testConn(uname, pass, ip, Integer.parseInt(ssh_port));
+                            runOnUiThread(() -> {
+                                if(connResult != null){
+                                    testStatus_edit.setText(R.string.connSuccess);
+                                    testStatus_edit.setTextColor(Color.parseColor("#6CC04A"));
+                                    openingCam.setVisibility(View.VISIBLE);
+                                    Intent camIntent = new Intent(getApplicationContext(), CamActivity.class);
+                                    Bundle b = new Bundle();
+                                    b.putString("alias", alias);
+                                    b.putString("uname", uname);
+                                    b.putString("pass", pass);
+                                    b.putString("ip", ip);
+                                    b.putString("web_port", web_port);
+                                    b.putString("ssh_port", ssh_port);
+                                    camIntent.putExtras(b);
+                                    new AsyncTask<Integer, Void, Void>(){
+                                        @Override
+                                        protected Void doInBackground(Integer... params) {
+                                            try {
+                                                boolean connResult = SSHCommand.accessCam(uname, pass, ip, Integer.parseInt(ssh_port), 1);
+                                                if(connResult){
+                                                    startActivity(camIntent);
+                                                }else{
+                                                    System.out.println("ERROR Starting Cam");
+                                                }
+                                            }catch (Exception e){
+                                                System.out.println("Exception Starting Cam");
+                                            }
+                                            return null;
+                                        }
+                                    }.execute(1);
+                                }else {
+                                    testStatus_edit.setText(R.string.connFailed);
+                                    testStatus_edit.setTextColor(Color.parseColor("#C51A4A"));
+                                }
+                                testStatus_edit.setVisibility(View.VISIBLE);
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    }catch (Exception e){
-                        System.out.println("Exception Starting Cam");
+                        return null;
                     }
-                    return null;
-                }
-            }.execute(1);
+                }.execute(1);
+            }else Toast.makeText(this, "Cannot connect", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -162,21 +189,18 @@ public class EditActivity extends AppCompatActivity {
             ssh_port = getIntent().getStringExtra("ssh_port");
             uname = getIntent().getStringExtra("uname");
             pass = getIntent().getStringExtra("pass");
-
             alias_edit.setText(alias);
             ip_edit.setText(ip);
             webport_edit.setText(web_port);
             sshport_edit.setText(ssh_port);
             uname_edit.setText(uname);
             pass_edit.setText(pass);
-
         }else{
             Toast.makeText(this, "No Data.", Toast.LENGTH_SHORT).show();
         }
     }
 
     boolean readInputs(String alias, String ip, String web_port, String ssh_port, String uname, String pass){
-
         if(alias.isEmpty() || ip.isEmpty()  || web_port.isEmpty()  || ssh_port.isEmpty()  || uname.isEmpty()  || pass.isEmpty()){
             Toast.makeText(EditActivity.this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
@@ -192,7 +216,6 @@ public class EditActivity extends AppCompatActivity {
         }else return true;
     }
 
-
     void confirmDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete "+ alias + "?");
@@ -203,7 +226,6 @@ public class EditActivity extends AppCompatActivity {
             finish();
         });
         builder.setNegativeButton("No", (dialogInterface, i) -> {
-
         });
         builder.create().show();
     }

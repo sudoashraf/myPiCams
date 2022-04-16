@@ -12,7 +12,8 @@
         android:theme="@style/Theme.PiCams">
         <activity
             android:name=".CamActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".EditActivity"
             android:exported="false"

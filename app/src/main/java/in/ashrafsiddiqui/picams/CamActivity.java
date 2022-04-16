@@ -52,8 +52,8 @@ public class CamActivity extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected void onDestroy() {
+        super.onDestroy();
         new AsyncTask<Integer, Void, Void>(){
             @Override
             protected Void doInBackground(Integer... params) {
